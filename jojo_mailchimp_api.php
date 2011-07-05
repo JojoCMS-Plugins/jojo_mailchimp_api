@@ -37,12 +37,33 @@ class Jojo_Plugin_Jojo_Mailchimp_API extends Jojo_Plugin
         $list_id = Jojo::getOption('mailchimp_cart_list_id', false);
         if (!$list_id) return false; //an empty value means customers aren't to be added to any list
         
-        /* get billing email address from cart */
-        $email = $cart->fields['billing_email'];
-        if (empty($email) || !Jojo::checkEmailFormat($email)) return false; //one would hope email address is valid at this point
+        $subscribe_type = Jojo::getOption('mailchimp_cart_subscribe_type', 'automatic');
         
-        /* attempt to subscribe */
-        return self::subscribe($email, $list_id, array('FNAME' => $cart->fields['billing_firstname'], 'LNAME' => $cart->fields['billing_firstname']));        
+        if (($subscribe_type == 'automatic') || (!empty($cart->fields['mailchimp_subscribe']) && ($cart->fields['mailchimp_subscribe'] == 1))) {
+            /* get billing email address from cart */
+            $email = $cart->fields['billing_email'];
+            if (empty($email) || !Jojo::checkEmailFormat($email)) return false; //one would hope email address is valid at this point
+            
+            /* attempt to subscribe */
+            return self::subscribe($email, $list_id, array('FNAME' => $cart->fields['billing_firstname'], 'LNAME' => $cart->fields['billing_firstname']));
+        }
+        return false;        
+    }
+    
+    function jojo_cart_extra_fields_billing()
+    {
+        global $smarty;
+        $subscribe_type = Jojo::getOption('mailchimp_cart_subscribe_type', 'automatic');
+        if (($subscribe_type == 'ask yes') || ($subscribe_type == 'ask no')) {
+            return $smarty->fetch('mailchimp_extra_fields.tpl');
+        }
+        return '';
+    }
+    
+    function jojo_cart_checkout_get_fields($fields)
+    {
+        $fields[] = 'mailchimp_subscribe';
+        return $fields;
     }
     
 }

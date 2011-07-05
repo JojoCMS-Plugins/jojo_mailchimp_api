@@ -13,7 +13,9 @@
  */
 
 
-Jojo::addHook('jojo_cart_success', 'jojo_cart_success', 'jojo_mailchimp_api');
+Jojo::addHook('jojo_cart_success',              'jojo_cart_success',              'jojo_mailchimp_api');
+Jojo::addHook('jojo_cart_extra_fields_billing', 'jojo_cart_extra_fields_billing', 'jojo_mailchimp_api');
+Jojo::addFilter('jojo_cart_checkout:get_fields', 'jojo_cart_checkout_get_fields', 'jojo_mailchimp_api');
 
 $_options[] = array(
     'id'          => 'mailchimp_api_key',
@@ -23,7 +25,7 @@ $_options[] = array(
     'type'        => 'text',
     'default'     => '',
     'options'     => '',
-    'plugin'      => 'empty_plugin'
+    'plugin'      => 'jojo_mailchimp_api'
 );
 
 $_options[] = array(
@@ -34,5 +36,27 @@ $_options[] = array(
     'type'        => 'text',
     'default'     => '',
     'options'     => '',
-    'plugin'      => 'empty_plugin'
+    'plugin'      => 'jojo_mailchimp_api'
+);
+
+$_options[] = array(
+    'id'          => 'mailchimp_cart_subscribe_type',
+    'category'    => 'MailChimp',
+    'label'       => 'MailChimp Subscribe type',
+    'description' => 'Automatic = customers are subscribed automatically after purchase. Ask after = customers are shown a subscribe button after purchase. Ask yes = custoers are shown a tickbox defaulting to yes, Ask no = custoers are shown a tickbox defaulting to no',
+    'type'        => 'radio',
+    'default'     => 'automatic',
+    'options'     => 'automatic,ask yes,ask no',//"ask after" option to be added also
+    'plugin'      => 'jojo_mailchimp_api'
+);
+
+$_options[] = array(
+    'id'          => 'mailchimp_cart_subscribe_message',
+    'category'    => 'MailChimp',
+    'label'       => 'MailChimp subscribe message',
+    'description' => 'Displayed by the checkbox asking customers if they wish to subscribe eg Would you like to subscribe to our newsletter',
+    'type'        => 'text',
+    'default'     => '',
+    'options'     => '',
+    'plugin'      => 'jojo_mailchimp_api'
 );
